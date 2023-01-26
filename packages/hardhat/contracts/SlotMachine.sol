@@ -292,7 +292,34 @@ contract SlotMachine is Ownable {
         }
     }
 
-    function claimPlayerEarnings() public {}
+    /**
+     * Claim player earnings of a specific user
+     * @param userAddress user address
+     */
+    function claimPlayerEarnings(address userAddress) public {
+        User user = infoPerUser[userAddress];
+        require(
+            user.moneyEarned > 0 || user.earnedByReferrals > 0,
+            "User has not earned money"
+        );
+        uint256 moneyToClaimForPlay = user.moneyEarned - user.moneyClaimed;
+        uint256 moneyToClaimForReferring = user.earnedByReferrals -
+            user.claimedByReferrals;
+
+        uint256 moneyToClaim = moneyToClaimForPlay + moneyToClaimForReferring;
+
+        require(moneyToClaim > 0, "User has claimed all the earnings");
+
+        address payable userAdressPayable = payable(userAddress);
+        referringUserAddress.transfer(moneyToClaim);
+
+        //Update user and global stats
+        infoPerUser[userAddress].moneyClaimed += moneyToClaimForPlay;
+        totalMoneyClaimedByPlayers += moneyToClaimForPlay;
+
+        infoPerUser[userAddress].claimedByReferrals += moneyToClaimForReferring;
+        totalMoneyClaimedByReferrals += moneyToClaimForReferring;
+    }
 
     /**
      *@dev Get total team members in contract
