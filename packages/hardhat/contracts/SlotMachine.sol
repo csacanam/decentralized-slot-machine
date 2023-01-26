@@ -198,8 +198,8 @@ contract SlotMachine is Ownable {
     ) private {
         totalMoneyEarnedByReferrals += ((amountToAdd * REFERRAL_FEE) / 100);
 
-        User memory referringUser = infoPerUser[referringUserAddress];
-        referringUser.earnedByReferrals += ((amountToAdd * REFERRAL_FEE) / 100);
+        infoPerUser[referringUserAddress].earnedByReferrals += ((amountToAdd *
+            REFERRAL_FEE) / 100);
     }
 
     //2. DEV LOGIC
@@ -297,7 +297,7 @@ contract SlotMachine is Ownable {
      * @param userAddress user address
      */
     function claimPlayerEarnings(address userAddress) public {
-        User user = infoPerUser[userAddress];
+        User memory user = infoPerUser[userAddress];
         require(
             user.moneyEarned > 0 || user.earnedByReferrals > 0,
             "User has not earned money"
@@ -311,7 +311,7 @@ contract SlotMachine is Ownable {
         require(moneyToClaim > 0, "User has claimed all the earnings");
 
         address payable userAdressPayable = payable(userAddress);
-        referringUserAddress.transfer(moneyToClaim);
+        userAdressPayable.transfer(moneyToClaim);
 
         //Update user and global stats
         infoPerUser[userAddress].moneyClaimed += moneyToClaimForPlay;
