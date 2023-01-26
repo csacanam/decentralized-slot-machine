@@ -266,6 +266,11 @@ contract SlotMachine is Ownable {
      *@dev Claim dev earnings
      */
     function claimDevEarnings() public onlyTeamMember {
+        require(
+            teamMembers.length > 0,
+            "There are not team members in the list"
+        );
+
         uint256 totalPendingMoney = totalMoneyEarnedByDevs -
             totalMoneyClaimedByDevs;
 
