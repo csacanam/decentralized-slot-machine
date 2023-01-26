@@ -2,7 +2,7 @@
 
 > A decentralized slot machine with juicy rewards! 🚀
 
-🧪 The decentralized slot machine is a DApp that allows people to bet their cryptocurrencies and multiply them by 30 with a Return to Player (RTP) of 93%. You can find how the mathematical model was built [here](https://classic.yarnpkg.com/en/docs/install/):
+🧪 The decentralized slot machine is a DApp that allows people to bet their cryptocurrencies and multiply them by 30 with a Return to Player (RTP) of 93%. You can find how the mathematical model was built in the [RTP Model Excel File.](https://github.com/csacanam/decentralized-slot-machine/blob/master/DOCS/rtp_model.xlsx):
 
 # 🏄‍♂️ Quick Start
 
