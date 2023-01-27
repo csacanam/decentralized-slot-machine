@@ -2,9 +2,24 @@
 
 pragma solidity >=0.7.0 <0.9.0;
 
+import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
+import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract SlotMachine is Ownable {
+contract SlotMachine is Ownable, VRFConsumerBaseV2 {
+    //VRF Chainlink
+    VRFCoordinatorV2Interface COORDINATOR;
+    uint64 subscriptionId;
+    bytes32 keyHash =
+        0x4b09e658ed251bcafeebbc69400383d49f344ace09b9576fe248bb02c003fe9f;
+    uint32 callbackGasLimit = 100000;
+    uint16 requestConfirmations = 3;
+    uint32 numWords = 3;
+
+    uint8 public constant INVALID_NUMBER = 20;
+
+    mapping(uint256 => Round) public rounds;
+
     struct User {
         uint256 moneyAdded; //money added to contract
         uint256 moneyEarned; //money earned by the user
@@ -20,19 +35,27 @@ contract SlotMachine is Ownable {
         uint8 percentage;
     }
 
-    mapping(uint8 => uint256) public prize;
+    struct Round {
+        address userAddress;
+        uint8 number1;
+        uint8 number2;
+        uint8 number3;
+        uint256 value;
+    }
+
     enum Symbols {
         cherry,
         bar,
         luckySeven,
         diamond
     }
+
+    mapping(uint8 => uint256) public prize;
     Symbols[] public reel1;
     Symbols[] public reel2;
     Symbols[] public reel3;
 
     mapping(address => User) public infoPerUser; //information per user
-
     uint256 public users; //amount of users who have used the protocol
     uint256 public totalMoneyAdded; //total money added to the contract by users
     uint256 public totalMoneyEarnedByPlayers; //total money earned by players in the contract
@@ -48,7 +71,17 @@ contract SlotMachine is Ownable {
     uint8 public constant DEV_FEE = 5; //Dev Fee - 5%
     uint8 public constant REFERRAL_FEE = 1; //Referrral Fee - 1%
 
-    constructor() payable {
+    //Events
+    event ReceivedRandomness(uint256 reqId, uint256 n1, uint256 n2, uint256 n3);
+    event RequestedRandomness(uint256 reqId, address invoker);
+
+    constructor(
+        uint64 _subscriptionId,
+        address _vrfCoordinator
+    ) payable VRFConsumerBaseV2(_vrfCoordinator) {
+        COORDINATOR = VRFCoordinatorV2Interface(_vrfCoordinator);
+        subscriptionId = _subscriptionId;
+
         prize[0] = 5 ether;
         prize[1] = 14 ether;
         prize[2] = 20 ether;
@@ -97,7 +130,9 @@ contract SlotMachine is Ownable {
      * @dev Allow user to play in the slot machine
      * @param referringUserAddress user who refer this play
      */
-    function play(address referringUserAddress) public payable {
+    function play(
+        address referringUserAddress
+    ) public payable returns (uint256 requestId) {
         require(msg.value > 0, "Amount should be greater than 0");
         require(msg.value == 1 ether, "msg.value should be 1 ether");
         require(
@@ -113,6 +148,8 @@ contract SlotMachine is Ownable {
             currentUser.claimedByReferrals = 0;
             currentUser.referringUserAddress = referringUserAddress;
             users += 1;
+
+            infoPerUser[msg.sender] = currentUser;
         }
 
         //Pay to referring user if exist
@@ -120,37 +157,63 @@ contract SlotMachine is Ownable {
             updateReferralEarnings(currentUser.referringUserAddress, msg.value);
         }
 
-        //Get random numbers
-        uint8 result1 = uint8(
-            uint256(
-                keccak256(abi.encodePacked(block.timestamp, block.difficulty))
-            ) % 4
-        );
-        uint8 result2 = uint8(
-            uint256(
-                keccak256(abi.encodePacked(block.timestamp, block.difficulty))
-            ) % 4
+        requestId = COORDINATOR.requestRandomWords(
+            keyHash,
+            subscriptionId,
+            requestConfirmations,
+            callbackGasLimit,
+            numWords
         );
 
-        uint8 result3 = uint8(
-            uint256(
-                keccak256(abi.encodePacked(block.timestamp, block.difficulty))
-            ) % 4
+        rounds[requestId] = Round(
+            msg.sender,
+            INVALID_NUMBER,
+            INVALID_NUMBER,
+            INVALID_NUMBER,
+            msg.value
         );
+
+        emit RequestedRandomness(requestId, msg.sender);
+    }
+
+    /**
+     * It is called when the randomWords are ready to be used
+     * @param requestId Request id
+     * @param randomWords Randow words
+     */
+    function fulfillRandomWords(
+        uint256 requestId,
+        uint256[] memory randomWords
+    ) internal override {
+        uint8 n1 = uint8(randomWords[0] % 10);
+        uint8 n2 = uint8(randomWords[1] % 10);
+        uint8 n3 = uint8(randomWords[2] % 10);
+
+        emit ReceivedRandomness(requestId, n1, n2, n3);
+
+        Round memory round = rounds[requestId];
+
+        round.number1 = n1;
+        round.number2 = n2;
+        round.number3 = n3;
+
+        rounds[requestId] = round;
+
+        User memory currentUser = infoPerUser[round.userAddress];
 
         //Check if the user won
-        if (result1 == result2 && result2 == result3) {
-            currentUser.moneyEarned += prize[result1];
-            totalMoneyEarnedByPlayers += prize[result1];
+        if (n1 == n2 && n2 == n3) {
+            currentUser.moneyEarned += prize[n1];
+            totalMoneyEarnedByPlayers += prize[n1];
         }
 
         //Update user info
-        currentUser.moneyAdded += msg.value;
-        infoPerUser[msg.sender] = currentUser;
+        currentUser.moneyAdded += round.value;
+        infoPerUser[round.userAddress] = currentUser;
 
         //Update general stats
-        totalMoneyAdded += msg.value;
-        totalMoneyEarnedByDevs += getDevFee(msg.value);
+        totalMoneyAdded += round.value;
+        totalMoneyEarnedByDevs += getDevFee(round.value);
     }
 
     /**
