@@ -18,8 +18,7 @@ describe("Decentralized Slot Machine", async function () {
 
       hardhatVrfCoordinatorV2Mock = await vrfCoordinatorV2Mock.deploy(0, 0);
 
-      let subscriptionId =
-        await hardhatVrfCoordinatorV2Mock.createSubscription();
+      await hardhatVrfCoordinatorV2Mock.createSubscription();
 
       await hardhatVrfCoordinatorV2Mock.fundSubscription(
         1,

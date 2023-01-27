@@ -192,8 +192,6 @@ contract SlotMachine is Ownable, VRFConsumerBaseV2 {
         uint8 n2 = uint8(randomWords[1] % 10);
         uint8 n3 = uint8(randomWords[2] % 10);
 
-        emit ReceivedRandomness(requestId, n1, n2, n3);
-
         Round memory round = rounds[requestId];
 
         round.number1 = n1;
@@ -217,6 +215,8 @@ contract SlotMachine is Ownable, VRFConsumerBaseV2 {
         //Update general stats
         totalMoneyAdded += round.value;
         totalMoneyEarnedByDevs += getDevFee(round.value);
+
+        emit ReceivedRandomness(requestId, n1, n2, n3);
     }
 
     /**
@@ -399,6 +399,14 @@ contract SlotMachine is Ownable, VRFConsumerBaseV2 {
      */
     function getTeamMemberList() public view returns (TeamMember[] memory) {
         return teamMembers;
+    }
+
+    /**
+     * Get round information
+     * @param roundId roundId
+     */
+    function getRoundInfo(uint256 roundId) public view returns (Round memory) {
+        return rounds[roundId];
     }
 
     //3. MODIFIERS AND OTHERS

@@ -17,16 +17,40 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const { deployer } = await getNamedAccounts();
   const chainId = await getChainId();
 
-  await deploy("SlotMachine", {
+  await deploy("VRFCoordinatorV2Mock", {
     // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
     from: deployer,
-    // args: [ "Hello", ethers.utils.parseEther("1.5") ],
+    args: [0, 0],
     log: true,
     waitConfirmations: 5,
   });
 
+  const hardhatVrfCoordinatorV2Mock = await ethers.getContract(
+    "VRFCoordinatorV2Mock",
+    deployer
+  );
+
+  await hardhatVrfCoordinatorV2Mock.createSubscription();
+
+  await hardhatVrfCoordinatorV2Mock.fundSubscription(
+    1,
+    ethers.utils.parseEther("7")
+  );
+
+  const myContract = await deploy("SlotMachine", {
+    // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
+    from: deployer,
+    args: [1, hardhatVrfCoordinatorV2Mock.address],
+    log: true,
+    waitConfirmations: 5,
+  });
+
+  await hardhatVrfCoordinatorV2Mock.addConsumer(1, myContract.address);
+
+  console.log("Contract address: ", myContract.address);
+
   // Getting a previously deployed contract
-  const YourContract = await ethers.getContract("SlotMachine", deployer);
+  //onst YourContract = await ethers.getContract("SlotMachine", deployer);
   /*  await YourContract.setPurpose("Hello");
   
     // To take ownership of yourContract using the ownable library uncomment next line and add the 
