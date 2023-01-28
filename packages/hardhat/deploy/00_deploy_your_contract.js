@@ -1,16 +1,6 @@
-// deploy/00_deploy_your_contract.js
-
 const { ethers } = require("hardhat");
 
 const localChainId = "31337";
-
-// const sleep = (ms) =>
-//   new Promise((r) =>
-//     setTimeout(() => {
-//       console.log(`waited for ${(ms / 1000).toFixed(3)} seconds`);
-//       r();
-//     }, ms)
-//   );
 
 module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const { deploy } = deployments;
@@ -18,7 +8,6 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const chainId = await getChainId();
 
   await deploy("VRFCoordinatorV2Mock", {
-    // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
     from: deployer,
     args: [0, 0],
     log: true,
@@ -38,7 +27,6 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   );
 
   const myContract = await deploy("SlotMachine", {
-    // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
     from: deployer,
     args: [1, hardhatVrfCoordinatorV2Mock.address],
     log: true,

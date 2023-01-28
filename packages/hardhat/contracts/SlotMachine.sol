@@ -16,7 +16,7 @@ contract SlotMachine is Ownable, VRFConsumerBaseV2 {
     bytes32 keyHash =
         0x4b09e658ed251bcafeebbc69400383d49f344ace09b9576fe248bb02c003fe9f;
     uint32 callbackGasLimit = 100000;
-    uint16 requestConfirmations = 3;
+    uint16 requestConfirmations = 5;
     uint32 numWords = 3;
 
     uint8 public constant INVALID_NUMBER = 20;
