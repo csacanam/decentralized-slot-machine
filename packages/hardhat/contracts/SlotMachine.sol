@@ -137,7 +137,7 @@ contract SlotMachine is Ownable, VRFConsumerBaseV2 {
         address referringUserAddress
     ) public payable returns (uint256) {
         require(msg.value > 0, "Amount should be greater than 0");
-        require(msg.value == 1 ether, "msg.value should be 1 ether");
+        require(msg.value >= 0.1 ether, "msg.value should be 1 ether");
         require(
             getMoneyInContract() - getCurrentDebt() >= 30 ether,
             "There is no money to pay. The contract should have more money."
@@ -204,8 +204,8 @@ contract SlotMachine is Ownable, VRFConsumerBaseV2 {
 
         //Check if the user won
         if (n1 == n2 && n2 == n3) {
-            currentUser.moneyEarned += prize[n1];
-            totalMoneyEarnedByPlayers += prize[n1];
+            currentUser.moneyEarned += prize[n1] * round.value;
+            totalMoneyEarnedByPlayers += prize[n1] * round.value;
         }
 
         //Update user info
