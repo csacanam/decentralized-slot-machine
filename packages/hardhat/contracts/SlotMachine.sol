@@ -135,7 +135,7 @@ contract SlotMachine is Ownable, VRFConsumerBaseV2 {
      */
     function play(
         address referringUserAddress
-    ) public payable returns (uint256 requestId) {
+    ) public payable returns (uint256) {
         require(msg.value > 0, "Amount should be greater than 0");
         require(msg.value == 1 ether, "msg.value should be 1 ether");
         require(
@@ -143,7 +143,7 @@ contract SlotMachine is Ownable, VRFConsumerBaseV2 {
             "There is no money to pay. The contract should have more money."
         );
 
-        User memory currentUser = infoPerUser[msg.sender];
+        User storage currentUser = infoPerUser[msg.sender];
         if (currentUser.active == false) {
             currentUser.active = true;
             currentUser.moneyEarned = 0;
@@ -151,8 +151,6 @@ contract SlotMachine is Ownable, VRFConsumerBaseV2 {
             currentUser.claimedByReferrals = 0;
             currentUser.referringUserAddress = referringUserAddress;
             users += 1;
-
-            infoPerUser[msg.sender] = currentUser;
         }
 
         //Pay to referring user if exist
@@ -160,7 +158,7 @@ contract SlotMachine is Ownable, VRFConsumerBaseV2 {
             updateReferralEarnings(currentUser.referringUserAddress, msg.value);
         }
 
-        requestId = COORDINATOR.requestRandomWords(
+        uint256 requestId = COORDINATOR.requestRandomWords(
             keyHash,
             subscriptionId,
             requestConfirmations,
@@ -168,7 +166,7 @@ contract SlotMachine is Ownable, VRFConsumerBaseV2 {
             numWords
         );
 
-        rounds[requestId] = Round(
+        Round memory currentRound = Round(
             msg.sender,
             INVALID_NUMBER,
             INVALID_NUMBER,
@@ -176,7 +174,13 @@ contract SlotMachine is Ownable, VRFConsumerBaseV2 {
             msg.value
         );
 
+        users += requestId;
+
+        rounds[requestId] = currentRound;
+
         emit RequestedRandomness(requestId, msg.sender);
+
+        return requestId;
     }
 
     /**
@@ -192,15 +196,13 @@ contract SlotMachine is Ownable, VRFConsumerBaseV2 {
         uint8 n2 = uint8(randomWords[1] % 10);
         uint8 n3 = uint8(randomWords[2] % 10);
 
-        Round memory round = rounds[requestId];
+        Round storage round = rounds[requestId];
 
         round.number1 = n1;
         round.number2 = n2;
         round.number3 = n3;
 
-        rounds[requestId] = round;
-
-        User memory currentUser = infoPerUser[round.userAddress];
+        User storage currentUser = infoPerUser[round.userAddress];
 
         //Check if the user won
         if (n1 == n2 && n2 == n3) {
@@ -210,7 +212,6 @@ contract SlotMachine is Ownable, VRFConsumerBaseV2 {
 
         //Update user info
         currentUser.moneyAdded += round.value;
-        infoPerUser[round.userAddress] = currentUser;
 
         //Update general stats
         totalMoneyAdded += round.value;
