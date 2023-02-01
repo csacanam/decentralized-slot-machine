@@ -85,7 +85,7 @@ module.exports = {
       },
     },
     gnosis: {
-      url: 'https://rpc.gnosischain.com/',
+      url: "https://rpc.gnosischain.com/",
       gasPrice: 1000000000,
       accounts: {
         mnemonic: mnemonic(),
@@ -120,7 +120,7 @@ module.exports = {
       },
     },
     chiado: {
-      url: 'https://rpc.chiadochain.net',
+      url: "https://rpc.chiadochain.net",
       gasPrice: 1000000000,
       accounts: {
         mnemonic: mnemonic(),
@@ -336,6 +336,22 @@ function debug(text) {
     console.log(text);
   }
 }
+
+//Tasks
+task("getRequestId", "Get the request id of a requestRandomWords tx")
+  .addPositionalParam("hash")
+  .setAction(async (taskArgs, { ethers }) => {
+    const playTxReceipt = await ethers.provider.getTransactionReceipt(
+      taskArgs.hash
+    );
+
+    console.log(
+      "Request Id:",
+      Number(
+        utils.defaultAbiCoder.decode(["uint256"], playTxReceipt.logs[1].data)
+      )
+    );
+  });
 
 task("wallet", "Create a wallet (pk) link", async (_, { ethers }) => {
   const randomWallet = ethers.Wallet.createRandom();

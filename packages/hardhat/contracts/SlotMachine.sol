@@ -174,8 +174,6 @@ contract SlotMachine is Ownable, VRFConsumerBaseV2 {
             msg.value
         );
 
-        users += requestId;
-
         rounds[requestId] = currentRound;
 
         emit RequestedRandomness(requestId, msg.sender);
