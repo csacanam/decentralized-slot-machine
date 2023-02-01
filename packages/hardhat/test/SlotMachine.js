@@ -138,12 +138,44 @@ describe("Decentralized Slot Machine", async function () {
           Number(ethers.utils.parseEther("0.2"))
         );
       });
+      it("There should be 0 ether in totalMoneyClaimedByDevs", async function () {
+        const totalMoneyClaimedByDevs =
+          await myContract.totalMoneyClaimedByDevs();
+
+        expect(Number(totalMoneyClaimedByDevs)).to.be.equal(
+          Number(ethers.utils.parseEther("0"))
+        );
+      });
+      it("There should be 0 ether in totalMoneyClaimedByPlayers", async function () {
+        const totalMoneyClaimedByPlayers =
+          await myContract.totalMoneyClaimedByPlayers();
+
+        expect(Number(totalMoneyClaimedByPlayers)).to.be.equal(
+          Number(ethers.utils.parseEther("0"))
+        );
+      });
+      it("There should be 0 ether in totalMoneyClaimedByReferrals", async function () {
+        const totalMoneyClaimedByReferrals =
+          await myContract.totalMoneyClaimedByReferrals();
+
+        expect(Number(totalMoneyClaimedByReferrals)).to.be.equal(
+          Number(ethers.utils.parseEther("0"))
+        );
+      });
       it("There should be 0.01 ether in totalMoneyEarnedByDevs", async function () {
         const totalMoneyEarnedByDevs =
           await myContract.totalMoneyEarnedByDevs();
 
         expect(Number(totalMoneyEarnedByDevs)).to.be.equal(
           Number(ethers.utils.parseEther("0.01"))
+        );
+      });
+      it("There should be 0 ether in totalMoneyEarnedByPlayers", async function () {
+        const totalMoneyEarnedByPlayers =
+          await myContract.totalMoneyEarnedByPlayers();
+
+        expect(Number(totalMoneyEarnedByPlayers)).to.be.equal(
+          Number(ethers.utils.parseEther("0"))
         );
       });
       it("There should be 0 ether in totalMoneyEarnedByReferrals", async function () {
