@@ -137,13 +137,10 @@ contract SlotMachine is Ownable, VRFConsumerBaseV2 {
         address referringUserAddress
     ) public payable returns (uint256) {
         require(msg.value > 0, "Amount should be greater than 0");
-        require(
-            msg.value >= 0.1 ether,
-            "msg.value should be greater than 0.1 ether"
-        );
+        require(msg.value >= 0.1 ether, "Value should be greater than 0.1");
         require(
             getMaxAllowedValue() >= msg.value,
-            "There is no money to pay. The contract should have more money."
+            "Cannot add money because contract could not pay if user wins"
         );
 
         User storage currentUser = infoPerUser[msg.sender];
