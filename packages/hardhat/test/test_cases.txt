@@ -424,8 +424,6 @@ General:
 - totalMoneyClaimedByReferrals should be equals to 0.002 ether
 - getMoneyInContract should be equals to 5.998 ether
 - getCurrentDebt should be equals to 0.02 ether
-
-
  
 4. DEVS MANAGEMENT
 
@@ -447,7 +445,7 @@ Add team member b with percentage 40:
 
 # Remove devs to team members list:
 
-Remove team member with a address:
+Remove team member with address a:
 - getTeamMembersLength should be equals to 1
 
 Add team member a from an account different than owner
