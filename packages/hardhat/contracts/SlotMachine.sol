@@ -142,7 +142,7 @@ contract SlotMachine is Ownable, VRFConsumerBaseV2 {
             "msg.value should be greater than 0.1 ether"
         );
         require(
-            getMoneyInContract() - getCurrentDebt() >= (msg.value * 30),
+            getMaxAllowedValue() >= msg.value,
             "There is no money to pay. The contract should have more money."
         );
 
@@ -239,6 +239,13 @@ contract SlotMachine is Ownable, VRFConsumerBaseV2 {
             totalMoneyClaimedByReferrals;
 
         return debtWithPlayers + debtWithDevs + debtWithReferrals;
+    }
+
+    /**
+     * Get the maximum value that any user can add to the game
+     */
+    function getMaxAllowedValue() public view returns (uint256) {
+        return (getMoneyInContract() - getCurrentDebt()) / 30;
     }
 
     /**
