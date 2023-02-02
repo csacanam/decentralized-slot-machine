@@ -11,7 +11,7 @@ const POLYGON_CHAIN_ID = "137";
 
 //Key Hash
 const GOERLI_KEY_HASH =
-  "0x4b09e658ed251bcafeebbc69400383d49f344ace09b9576fe248bb02c003fe9f";
+  "0x79d3d8832d904592c0bf9818b621522c988bb8b0c05cdc3b15aea1b6e8db0c15";
 const MUMBAI_KEY_HASH =
   "0x4b09e658ed251bcafeebbc69400383d49f344ace09b9576fe248bb02c003fe9f";
 const POLYGON_KEY_HASH =
@@ -94,19 +94,17 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
 
   console.log("Contract address: ", myContract.address);
 
-  // Getting a previously deployed contract
-  //onst YourContract = await ethers.getContract("SlotMachine", deployer);
-  /*  await YourContract.setPurpose("Hello");
-  
-    // To take ownership of yourContract using the ownable library uncomment next line and add the 
-    // address you want to be the owner. 
-    
-    await YourContract.transferOwnership(
-      "ADDRESS_HERE"
+  if (chainId != LOCAL_CHAIN_ID) {
+    // Getting a previously deployed contract
+    const deployedContract = await ethers.getContract("SlotMachine", deployer);
+    // To take ownership of yourContract using the ownable library uncomment next line and add the
+    // address you want to be the owner.
+    await deployedContract.transferOwnership(
+      "0x0a25C91209a158D0a4922837cdd590aCe0D13f0d"
     );
+  }
 
-    //const YourContract = await ethers.getContractAt('YourContract', "0xaAC799eC2d00C013f1F11c37E654e59B0429DF6A") //<-- if you want to instantiate a version of a contract at a specific address!
-  */
+  //const YourContract = await ethers.getContractAt('YourContract', "0xaAC799eC2d00C013f1F11c37E654e59B0429DF6A") //<-- if you want to instantiate a version of a contract at a specific address!
 
   /*
   //If you want to send value to an address from the deployer
