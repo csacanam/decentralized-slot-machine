@@ -1,0 +1,226 @@
+Test Cases
+
+1. ROUNDS
+
+ROUND # 1
+
+First Player Plays with 0.1 ether, referringUserAddress equals to zero address and don't win
+
+User:
+- moneyAdded should be 0.1 ether
+- moneyEarned should be 0 ether
+- moneyClaimed should be 0 ether
+- active should be true
+- referringUserAddress should be zero address
+- earnedByReferrals should be 0 ether
+- claimedByReferrals should be 0 ether
+- infoPerUser[userAddress] should have a user with the same properties above
+
+Round:
+- round[1].userAddress should be equals to call address
+- round[1].number1 should be equals to 1
+- round[1].number2 should be equals to 9
+- round[1].number2 should be equals to 6
+- round[1].value should be equals to 0.1 ether
+
+General:
+- users should be equals to 1
+- totalMoneyAdded should be equals to 0.1 ether
+- totalMoneyEarnedByPlayers should be equals to 0 ether
+- totalMoneyClaimedByPlayers should be equals to 0 ether
+- totalMoneyEarnedByDevs should be equals to 0.005 ether
+- totalMoneyClaimedByDevs should be equals to 0 ether
+- totalMoneyEarnedByReferrals should be equals to 0 ether
+- totalMoneyClaimedByReferrals should be equals to 0 ether
+- getMoneyInContract should be equals to 7.1 ether
+- getCurrentDebt should be equals to 0.005 ether
+
+ROUND # 2
+
+First Player Plays with 0.1 ether, referringUserAddress equals to zero address and don't win
+
+User:
+- moneyAdded should be 0.2 ether
+- moneyEarned should be 0 ether
+- moneyClaimed should be 0 ether
+- active should be true
+- referringUserAddress should be zero address
+- earnedByReferrals should be 0 ether
+- claimedByReferrals should be 0 ether
+- infoPerUser[userAddress] should have a user with the same properties above
+
+Round:
+- round[2].userAddress should be equals to call address
+- round[2].number1 should be equals to 1
+- round[2].number2 should be equals to 7
+- round[2].number2 should be equals to 8
+- round[2].value should be equals to 0.1 ether
+
+General:
+- users should be equals to 1
+- totalMoneyAdded should be equals to 0.2 ether
+- totalMoneyEarnedByPlayers should be equals to 0 ether
+- totalMoneyClaimedByPlayers should be equals to 0 ether
+- totalMoneyEarnedByDevs should be equals to 0.01 ether
+- totalMoneyClaimedByDevs should be equals to 0 ether
+- totalMoneyEarnedByReferrals should be equals to 0 ether
+- totalMoneyClaimedByReferrals should be equals to 0 ether
+- getMoneyInContract should be equals to 7.2 ether
+- getCurrentDebt should be equals to 0.01 ether
+
+ROUND # 3
+
+Second Player Plays with 0.1 ether, referringUserAddress equals to first player address and don't win
+
+First Player:
+- moneyAdded should be 0.2 ether
+- moneyEarned should be 0 ether
+- moneyClaimed should be 0 ether
+- active should be true
+- referringUserAddress should be zero address
+- earnedByReferrals should be 0.001 ether
+- claimedByReferrals should be 0 ether
+- infoPerUser[userAddress] should have a user with the same properties above
+
+Second Player:
+- moneyAdded should be 0.1 ether
+- moneyEarned should be 0 ether
+- moneyClaimed should be 0 ether
+- active should be true
+- referringUserAddress should be first player address
+- earnedByReferrals should be 0 ether
+- claimedByReferrals should be 0 ether
+- infoPerUser[userAddress] should have a user with the same properties above
+
+Round:
+- round[3].userAddress should be equals to call address
+- round[3].number1 should be equals to 1
+- round[3].number2 should be equals to 2
+- round[3].number2 should be equals to 3
+- round[3].value should be equals to 0.1 ether
+
+General:
+- users should be equals to 2
+- totalMoneyAdded should be equals to 0.3 ether
+- totalMoneyEarnedByPlayers should be equals to 0 ether
+- totalMoneyClaimedByPlayers should be equals to 0 ether
+- totalMoneyEarnedByDevs should be equals to 0.015 ether
+- totalMoneyClaimedByDevs should be equals to 0 ether
+- totalMoneyEarnedByReferrals should be equals to 0.001 ether
+- totalMoneyClaimedByReferrals should be equals to 0 ether
+- getMoneyInContract should be equals to 7.3 ether
+- getCurrentDebt should be equals to 0.016 ether
+
+ROUND # 4
+
+Second Player Plays with 0.1 ether, referringUserAddress equals to zero address and win
+
+First Player:
+- moneyAdded should be 0.2 ether
+- moneyEarned should be 0 ether
+- moneyClaimed should be 0 ether
+- active should be true
+- referringUserAddress should be zero address
+- earnedByReferrals should be 0.002 ether
+- claimedByReferrals should be 0 ether
+- infoPerUser[userAddress] should have a user with the same properties above
+
+Second Player:
+- moneyAdded should be 0.2 ether
+- moneyEarned should be 1.4 ether
+- moneyClaimed should be 0 ether
+- active should be true
+- referringUserAddress should be first player address
+- earnedByReferrals should be 0 ether
+- claimedByReferrals should be 0 ether
+- infoPerUser[userAddress] should have a user with the same properties above
+
+Round:
+- round[4].userAddress should be equals to call address
+- round[4].number1 should be equals to 1
+- round[4].number2 should be equals to 1
+- round[4].number2 should be equals to 1
+- round[4].value should be equals to 0.1 ether
+
+General:
+- users should be equals to 2
+- totalMoneyAdded should be equals to 0.4 ether
+- totalMoneyEarnedByPlayers should be equals to 1.4 ether
+- totalMoneyClaimedByPlayers should be equals to 0 ether
+- totalMoneyEarnedByDevs should be equals to 0.02 ether
+- totalMoneyClaimedByDevs should be equals to 0 ether
+- totalMoneyEarnedByReferrals should be equals to 0.002 ether
+- totalMoneyClaimedByReferrals should be equals to 0 ether
+- getMoneyInContract should be equals to 7.4 ether
+- getCurrentDebt should be equals to 1.422 ether
+
+
+2. CLAIMS
+
+# 1 First Player Claims Earnings
+
+First Player:
+- moneyAdded should be 0.2 ether
+- moneyEarned should be 0 ether
+- moneyClaimed should be 0 ether
+- active should be true
+- referringUserAddress should be zero address
+- earnedByReferrals should be 0.002 ether
+- claimedByReferrals should be 0.002 ether
+- infoPerUser[userAddress] should have a user with the same properties above
+
+Second Player:
+- moneyAdded should be 0.2 ether
+- moneyEarned should be 1.4 ether
+- moneyClaimed should be 0 ether
+- active should be true
+- referringUserAddress should be first player address
+- earnedByReferrals should be 0 ether
+- claimedByReferrals should be 0 ether
+- infoPerUser[userAddress] should have a user with the same properties above
+
+General:
+- users should be equals to 2
+- totalMoneyAdded should be equals to 0.4 ether
+- totalMoneyEarnedByPlayers should be equals to 1.4 ether
+- totalMoneyClaimedByPlayers should be equals to 0 ether
+- totalMoneyEarnedByDevs should be equals to 0.02 ether
+- totalMoneyClaimedByDevs should be equals to 0 ether
+- totalMoneyEarnedByReferrals should be equals to 0.002 ether
+- totalMoneyClaimedByReferrals should be equals to 0.002 ether
+- getMoneyInContract should be equals to 7.398 ether
+- getCurrentDebt should be equals to 1.42 ether
+
+# 2 Second Player Claims Earnings
+
+First Player:
+- moneyAdded should be 0.2 ether
+- moneyEarned should be 0 ether
+- moneyClaimed should be 0 ether
+- active should be true
+- referringUserAddress should be zero address
+- earnedByReferrals should be 0.002 ether
+- claimedByReferrals should be 0.002 ether
+- infoPerUser[userAddress] should have a user with the same properties above
+
+Second Player:
+- moneyAdded should be 0.2 ether
+- moneyEarned should be 1.4 ether
+- moneyClaimed should be 1.4 ether
+- active should be true
+- referringUserAddress should be first player address
+- earnedByReferrals should be 0 ether
+- claimedByReferrals should be 0 ether
+- infoPerUser[userAddress] should have a user with the same properties above
+
+General:
+- users should be equals to 2
+- totalMoneyAdded should be equals to 0.4 ether
+- totalMoneyEarnedByPlayers should be equals to 1.4 ether
+- totalMoneyClaimedByPlayers should be equals to 1.4 ether
+- totalMoneyEarnedByDevs should be equals to 0.02 ether
+- totalMoneyClaimedByDevs should be equals to 0 ether
+- totalMoneyEarnedByReferrals should be equals to 0.002 ether
+- totalMoneyClaimedByReferrals should be equals to 0.002 ether
+- getMoneyInContract should be equals to 5.998 ether
+- getCurrentDebt should be equals to 0.02 ether
