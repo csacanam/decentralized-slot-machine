@@ -7,35 +7,37 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const { deployer } = await getNamedAccounts();
   const chainId = await getChainId();
 
-  await deploy("VRFCoordinatorV2Mock", {
-    from: deployer,
-    args: [0, 0],
-    log: true,
-    waitConfirmations: 5,
-  });
+  if (chainId == localChainId) {
+    await deploy("VRFCoordinatorV2Mock", {
+      from: deployer,
+      args: [0, 0],
+      log: true,
+      waitConfirmations: 5,
+    });
 
-  const hardhatVrfCoordinatorV2Mock = await ethers.getContract(
-    "VRFCoordinatorV2Mock",
-    deployer
-  );
+    const hardhatVrfCoordinatorV2Mock = await ethers.getContract(
+      "VRFCoordinatorV2Mock",
+      deployer
+    );
 
-  await hardhatVrfCoordinatorV2Mock.createSubscription();
+    await hardhatVrfCoordinatorV2Mock.createSubscription();
 
-  await hardhatVrfCoordinatorV2Mock.fundSubscription(
-    1,
-    ethers.utils.parseEther("7")
-  );
+    await hardhatVrfCoordinatorV2Mock.fundSubscription(
+      1,
+      ethers.utils.parseEther("7")
+    );
 
-  const myContract = await deploy("SlotMachine", {
-    from: deployer,
-    args: [1, hardhatVrfCoordinatorV2Mock.address],
-    log: true,
-    waitConfirmations: 5,
-  });
+    const myContract = await deploy("SlotMachine", {
+      from: deployer,
+      args: [1, hardhatVrfCoordinatorV2Mock.address],
+      log: true,
+      waitConfirmations: 5,
+    });
 
-  await hardhatVrfCoordinatorV2Mock.addConsumer(1, myContract.address);
+    await hardhatVrfCoordinatorV2Mock.addConsumer(1, myContract.address);
 
-  console.log("Contract address: ", myContract.address);
+    console.log("Contract address: ", myContract.address);
+  }
 
   // Getting a previously deployed contract
   //onst YourContract = await ethers.getContract("SlotMachine", deployer);
