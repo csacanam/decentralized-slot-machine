@@ -153,8 +153,11 @@ contract SlotMachine is Ownable, VRFConsumerBaseV2 {
             users += 1;
         }
 
-        //Pay to referring user if exist
-        if (currentUser.referringUserAddress != address(0)) {
+        //Pay to referring user if exist and if it is not the same user
+        if (
+            currentUser.referringUserAddress != address(0) &&
+            currentUser.referringUserAddress != msg.sender
+        ) {
             updateReferralEarnings(currentUser.referringUserAddress, msg.value);
         }
 
