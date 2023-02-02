@@ -137,9 +137,12 @@ contract SlotMachine is Ownable, VRFConsumerBaseV2 {
         address referringUserAddress
     ) public payable returns (uint256) {
         require(msg.value > 0, "Amount should be greater than 0");
-        require(msg.value >= 0.1 ether, "msg.value should be 1 ether");
         require(
-            getMoneyInContract() - getCurrentDebt() >= 30 ether,
+            msg.value >= 0.1 ether,
+            "msg.value should be greater than 0.1 ether"
+        );
+        require(
+            getMoneyInContract() - getCurrentDebt() >= (msg.value * 30),
             "There is no money to pay. The contract should have more money."
         );
 
@@ -331,11 +334,6 @@ contract SlotMachine is Ownable, VRFConsumerBaseV2 {
      *@dev Claim dev earnings
      */
     function claimDevEarnings() public onlyTeamMember {
-        require(
-            teamMembers.length > 0,
-            "There are not team members in the list"
-        );
-
         uint256 totalPendingMoney = totalMoneyEarnedByDevs -
             totalMoneyClaimedByDevs;
 
@@ -416,6 +414,11 @@ contract SlotMachine is Ownable, VRFConsumerBaseV2 {
      *@dev Check if current user is part of the member list
      */
     modifier onlyTeamMember() {
+        require(
+            teamMembers.length > 0,
+            "There are not team members in the list"
+        );
+
         bool isMember = false;
 
         for (uint8 i = 0; i < teamMembers.length; i++) {

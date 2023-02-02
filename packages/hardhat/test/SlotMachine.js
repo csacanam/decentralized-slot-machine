@@ -30,7 +30,7 @@ describe("Decentralized Slot Machine", async function () {
         1,
         hardhatVrfCoordinatorV2Mock.address,
         {
-          value: ethers.utils.parseEther("100"),
+          value: ethers.utils.parseEther("7"),
         }
       );
 
