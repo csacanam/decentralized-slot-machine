@@ -85,10 +85,10 @@ contract SlotMachine is Ownable, VRFConsumerBaseV2 {
         COORDINATOR = VRFCoordinatorV2Interface(_vrfCoordinator);
         subscriptionId = _subscriptionId;
 
-        prize[0] = 5 ether;
-        prize[1] = 14 ether;
-        prize[2] = 20 ether;
-        prize[3] = 30 ether;
+        prize[0] = 5;
+        prize[1] = 14;
+        prize[2] = 20;
+        prize[3] = 30;
         reel1 = [
             Symbols.cherry,
             Symbols.cherry,
