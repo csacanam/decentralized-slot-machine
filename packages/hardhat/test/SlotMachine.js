@@ -28,9 +28,12 @@ describe("Decentralized Slot Machine", async function () {
         ethers.utils.parseEther("7")
       );
 
+      const keyHash =
+        "0x4b09e658ed251bcafeebbc69400383d49f344ace09b9576fe248bb02c003fe9f";
       myContract = await SlotMachine.deploy(
         1,
         hardhatVrfCoordinatorV2Mock.address,
+        keyHash,
         {
           value: ethers.utils.parseEther("7"),
         }

@@ -1,13 +1,39 @@
 const { ethers } = require("hardhat");
+const { chain } = require("ramda");
 
-const localChainId = "31337";
+//Testnets
+const LOCAL_CHAIN_ID = "31337";
+const GOERLI_CHAIN_ID = "5";
+const MUMBAI_CHAIN_ID = "80001";
+
+//Mainnets
+const POLYGON_CHAIN_ID = "137";
+
+//Key Hash
+const GOERLI_KEY_HASH =
+  "0x4b09e658ed251bcafeebbc69400383d49f344ace09b9576fe248bb02c003fe9f";
+const MUMBAI_KEY_HASH =
+  "0x4b09e658ed251bcafeebbc69400383d49f344ace09b9576fe248bb02c003fe9f";
+const POLYGON_KEY_HASH =
+  "0x6e099d640cde6de9d40ac749b4b594126b0169747122711109c9985d47751f93";
+
+//CoordinatorAddress
+const GOERLI_COORDINATOR_ADDRESS = "0x2Ca8E0C643bDe4C2E08ab1fA0da3401AdAD7734D";
+const MUMBAI_COORDINATOR_ADDRESS = "0x7a1BaC17Ccc5b313516C5E16fb24f7659aA5ebed";
+const POLYGON_COORDINATOR_ADDRESS =
+  "	0xAE975071Be8F8eE67addBC1A82488F1C24858067";
 
 module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
   const chainId = await getChainId();
+  let keyHash;
+  let vrfCoordinatorAddress;
+  let hardhatVrfCoordinatorV2Mock;
 
-  if (chainId == localChainId) {
+  if (chainId == LOCAL_CHAIN_ID) {
+    keyHash = MUMBAI_KEY_HASH;
+
     await deploy("VRFCoordinatorV2Mock", {
       from: deployer,
       args: [0, 0],
@@ -15,9 +41,8 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
       waitConfirmations: 5,
     });
 
-    const hardhatVrfCoordinatorV2Mock = await ethers.getContract(
-      "VRFCoordinatorV2Mock",
-      deployer
+    hardhatVrfCoordinatorV2Mock = await ethers.getContract(
+      "VRFCoordinatorV2Mock"
     );
 
     await hardhatVrfCoordinatorV2Mock.createSubscription();
@@ -27,17 +52,30 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
       ethers.utils.parseEther("7")
     );
 
-    const myContract = await deploy("SlotMachine", {
-      from: deployer,
-      args: [1, hardhatVrfCoordinatorV2Mock.address],
-      log: true,
-      waitConfirmations: 5,
-    });
-
-    await hardhatVrfCoordinatorV2Mock.addConsumer(1, myContract.address);
-
-    console.log("Contract address: ", myContract.address);
+    vrfCoordinatorAddress = hardhatVrfCoordinatorV2Mock.address;
   }
+  if (chainId == GOERLI_CHAIN_ID) {
+    keyHash = GOERLI_KEY_HASH;
+    vrfCoordinatorAddress = GOERLI_COORDINATOR_ADDRESS;
+  }
+
+  if (chainId == POLYGON_CHAIN_ID) {
+    keyHash = POLYGON_KEY_HASH;
+    vrfCoordinatorAddress = POLYGON_COORDINATOR_ADDRESS;
+  }
+
+  const myContract = await deploy("SlotMachine", {
+    from: deployer,
+    args: [1, vrfCoordinatorAddress, keyHash],
+    log: true,
+    waitConfirmations: 5,
+  });
+
+  if (chainId == LOCAL_CHAIN_ID) {
+    await hardhatVrfCoordinatorV2Mock.addConsumer(1, myContract.address);
+  }
+
+  console.log("Contract address: ", myContract.address);
 
   // Getting a previously deployed contract
   //onst YourContract = await ethers.getContract("SlotMachine", deployer);
