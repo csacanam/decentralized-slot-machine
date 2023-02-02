@@ -23,6 +23,12 @@ const MUMBAI_COORDINATOR_ADDRESS = "0x7a1BaC17Ccc5b313516C5E16fb24f7659aA5ebed";
 const POLYGON_COORDINATOR_ADDRESS =
   "	0xAE975071Be8F8eE67addBC1A82488F1C24858067";
 
+//Subscription
+const LOCAL_SUBSCRIPTION_ID = "1";
+const GOERLI_SUBSCRIPTION_ID = "9404";
+const MUMBAI_SUBSCRIPTION_ID = "";
+const POLYGON_SUBSCRIPTION_ID = "";
+
 module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
@@ -30,9 +36,11 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   let keyHash;
   let vrfCoordinatorAddress;
   let hardhatVrfCoordinatorV2Mock;
+  let subscriptionId;
 
   if (chainId == LOCAL_CHAIN_ID) {
     keyHash = MUMBAI_KEY_HASH;
+    subscriptionId = LOCAL_SUBSCRIPTION_ID;
 
     await deploy("VRFCoordinatorV2Mock", {
       from: deployer,
@@ -54,19 +62,28 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
 
     vrfCoordinatorAddress = hardhatVrfCoordinatorV2Mock.address;
   }
+
   if (chainId == GOERLI_CHAIN_ID) {
     keyHash = GOERLI_KEY_HASH;
     vrfCoordinatorAddress = GOERLI_COORDINATOR_ADDRESS;
+    subscriptionId = GOERLI_SUBSCRIPTION_ID;
+  }
+
+  if (chainId == MUMBAI_CHAIN_ID) {
+    keyHash = MUMBAI_KEY_HASH;
+    vrfCoordinatorAddress = MUMBAI_COORDINATOR_ADDRESS;
+    subscriptionId = MUMBAI_SUBSCRIPTION_ID;
   }
 
   if (chainId == POLYGON_CHAIN_ID) {
     keyHash = POLYGON_KEY_HASH;
     vrfCoordinatorAddress = POLYGON_COORDINATOR_ADDRESS;
+    subscriptionId = POLYGON_SUBSCRIPTION_ID;
   }
 
   const myContract = await deploy("SlotMachine", {
     from: deployer,
-    args: [1, vrfCoordinatorAddress, keyHash],
+    args: [subscriptionId, vrfCoordinatorAddress, keyHash],
     log: true,
     waitConfirmations: 5,
   });

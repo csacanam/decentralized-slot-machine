@@ -10,12 +10,6 @@ contract SlotMachine is Ownable, VRFConsumerBaseV2 {
     //VRF Chainlink
     VRFCoordinatorV2Interface COORDINATOR;
     uint64 subscriptionId;
-    //Goerli Key Hash
-    //bytes 32 keyHash = 0x79d3d8832d904592c0bf9818b621522c988bb8b0c05cdc3b15aea1b6e8db0c15
-    //Mumbai Key Hash
-    //bytes32 keyHash = 0x4b09e658ed251bcafeebbc69400383d49f344ace09b9576fe248bb02c003fe9f;
-    //Polygon Key Hash
-    //bytes32 keyHash = 0x6e099d640cde6de9d40ac749b4b594126b0169747122711109c9985d47751f93;
     bytes32 keyHash;
     uint32 callbackGasLimit = 100000;
     uint16 requestConfirmations = 5;
