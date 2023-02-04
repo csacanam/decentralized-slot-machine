@@ -78,7 +78,7 @@ contract SlotMachine is Ownable, VRFConsumerBaseV2 {
         uint256 n2,
         uint256 n3
     );
-    event RequestedRandomness(uint256 indexed reqId, address invoker);
+    event RequestedRandomness(uint256 indexed reqId, address indexed invoker);
 
     constructor(
         uint64 _subscriptionId,
