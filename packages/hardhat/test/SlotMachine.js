@@ -581,15 +581,17 @@ describe("Decentralized Slot Machine", async function () {
       });
 
       describe("Round # 6 - Second Player", function () {
-        it("Play with 0.05 ether should be reverted", async () => {
+        it("Play with 0.005 ether should be reverted", async () => {
           let myContractAsAccount2 = myContract.connect(account2);
 
           //Play Transaction
           await expect(
             myContractAsAccount2.play(ethers.constants.AddressZero, {
-              value: ethers.utils.parseEther("0.05"),
+              value: ethers.utils.parseEther("0.005"),
             })
-          ).to.be.revertedWith("Value should be greater than 0.1");
+          ).to.be.revertedWith(
+            "Value should be greater than minimum value to play"
+          );
         });
 
         it("Check first player information", async () => {

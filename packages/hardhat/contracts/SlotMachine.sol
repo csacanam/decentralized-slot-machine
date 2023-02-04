@@ -15,6 +15,7 @@ contract SlotMachine is Ownable, VRFConsumerBaseV2 {
     uint16 requestConfirmations = 5;
     uint32 numWords = 3;
 
+    uint256 public constant MINIMUM_VALUE_TO_PLAY = 0.01 ether;
     uint8 public constant INVALID_NUMBER = 20;
 
     mapping(uint256 => Round) public rounds;
@@ -134,10 +135,17 @@ contract SlotMachine is Ownable, VRFConsumerBaseV2 {
     function play(
         address referringUserAddress
     ) public payable returns (uint256) {
-        require(msg.value > 0, "Amount should be greater than 0");
-        require(msg.value >= 0.1 ether, "Value should be greater than 0.1");
         require(
-            getMaxAllowedValue() >= msg.value,
+            !isClosed(),
+            "Cannot add money because contract could not pay if user wins"
+        );
+        require(msg.value > 0, "Amount should be greater than 0");
+        require(
+            msg.value >= MINIMUM_VALUE_TO_PLAY,
+            "Value should be greater than minimum value to play"
+        );
+        require(
+            getMaxValueToPlay() >= msg.value,
             "Cannot add money because contract could not pay if user wins"
         );
 
@@ -242,8 +250,29 @@ contract SlotMachine is Ownable, VRFConsumerBaseV2 {
     /**
      * Get the maximum value that any user can add to the game
      */
-    function getMaxAllowedValue() public view returns (uint256) {
-        return (getMoneyInContract() - getCurrentDebt()) / 30;
+    function getMaxValueToPlay() public view returns (uint256) {
+        if (
+            ((getMoneyInContract() - getCurrentDebt()) / 30) <=
+            MINIMUM_VALUE_TO_PLAY
+        ) {
+            return MINIMUM_VALUE_TO_PLAY;
+        } else {
+            return (getMoneyInContract() - getCurrentDebt()) / 30;
+        }
+    }
+
+    /**
+     * It helps to know if the game is open or closed
+     */
+    function isClosed() public view returns (bool) {
+        if (
+            ((getMoneyInContract() - getCurrentDebt()) / 30) <
+            MINIMUM_VALUE_TO_PLAY
+        ) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
