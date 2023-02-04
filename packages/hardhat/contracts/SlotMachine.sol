@@ -72,8 +72,13 @@ contract SlotMachine is Ownable, VRFConsumerBaseV2 {
     uint8 public constant REFERRAL_FEE = 1; //Referrral Fee - 1%
 
     //Events
-    event ReceivedRandomness(uint256 reqId, uint256 n1, uint256 n2, uint256 n3);
-    event RequestedRandomness(uint256 reqId, address invoker);
+    event ReceivedRandomness(
+        uint256 indexed reqId,
+        uint256 n1,
+        uint256 n2,
+        uint256 n3
+    );
+    event RequestedRandomness(uint256 indexed reqId, address invoker);
 
     constructor(
         uint64 _subscriptionId,
