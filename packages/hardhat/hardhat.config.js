@@ -70,19 +70,19 @@ module.exports = {
       */
     },
     polygon: {
-      url: "https://polygon-mainnet.infura.io/v3/${INFURA_KEY}",
+      url: "https://polygon-mainnet.infura.io/v3/" + INFURA_KEY,
       accounts: {
         mnemonic: mnemonic(),
       },
     },
     goerli: {
-      url: "https://goerli.infura.io/v3/${INFURA_KEY}",
+      url: "https://goerli.infura.io/v3/" + INFURA_KEY,
       accounts: {
         mnemonic: mnemonic(),
       },
     },
     mumbai: {
-      url: "https://polygon-mumbai.infura.io/v3/${INFURA_KEY}",
+      url: "https://polygon-mumbai.infura.io/v3/" + INFURA_KEY,
       accounts: {
         mnemonic: mnemonic(),
       },
