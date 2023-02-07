@@ -63,29 +63,28 @@ module.exports = {
   networks: {
     localhost: {
       url: "http://127.0.0.1:8545/",
-      /*
-        notice no mnemonic here? it will just use account 0 of the hardhat node to deploy
-        (you can put in a mnemonic here to set the deployer locally)
-
-      */
+      deploy: ["deploy/mock", "deploy/localhost"],
     },
     polygon: {
       url: "https://polygon-mainnet.infura.io/v3/" + INFURA_KEY,
       accounts: {
         mnemonic: mnemonic(),
       },
+      deploy: ["deploy/mainnet-polygon"],
     },
     goerli: {
       url: "https://goerli.infura.io/v3/" + INFURA_KEY,
       accounts: {
         mnemonic: mnemonic(),
       },
+      deploy: ["deploy/testnet-goerli"],
     },
     mumbai: {
       url: "https://polygon-mumbai.infura.io/v3/" + INFURA_KEY,
       accounts: {
         mnemonic: mnemonic(),
       },
+      deploy: ["deploy/testnet-mumbai"],
     },
   },
   solidity: {
@@ -158,7 +157,7 @@ task("getRequestId", "Get the request id of a requestRandomWords tx")
     console.log(
       "Request Id:",
       Number(
-        utils.defaultAbiCoder.decode(["uint256"], playTxReceipt.logs[1].data)
+        utils.defaultAbiCoder.decode(["uint256"], playTxReceipt.logs[0].data)
       )
     );
   });
