@@ -22,12 +22,32 @@ function Home({ yourLocalBalance, readContracts }) {
 
   return (
     <div>
-      <section className="gameResult">Hola</section>
-      <section className="roulette">Hola</section>
-      <section style={styles.rouletteOptions}>
-        <div>Sonido</div>
-        <div>Boton</div>
-      </section>
+      <div id="header">
+        <h1>Dashboard</h1>
+        <p>All values are expressed in MATIC.</p>
+      </div>
+      <div id="balanceInfo">
+        <div className="balance">
+          <h2>Balance</h2>
+          <p>____</p>
+        </div>
+        <div className="rewards">
+          <h2>Unclaimed rewards</h2>
+          <div>
+            <h3>Wins:</h3>
+            <p>____</p>
+          </div>
+          <div>
+            <h3>Referrals:</h3>
+            <p>____</p>
+          </div>
+        </div>
+        <div>
+          <h2>Please, connect your wallet</h2>
+          <p>Please connect your wallet to play, earn and claim your rewards.</p>
+          <button>Connect wallet</button>
+        </div>
+      </div>
     </div>
   );
 }
