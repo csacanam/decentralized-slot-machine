@@ -22,8 +22,16 @@ function Home({ yourLocalBalance, readContracts, address, web3Modal, logoutOfWeb
     },
   };
 
+  //Connect Button
+  let accountButtonInfo;
+  if (web3Modal?.cachedProvider) {
+    accountButtonInfo = { name: "Logout", action: logoutOfWeb3Modal };
+  } else {
+    accountButtonInfo = { name: "Connect", action: loadWeb3Modal };
+  }
+
+  //Get info per user
   const infoPerUser = useContractReader(readContracts, "SlotMachine", "infoPerUser", [address]);
-  console.log(infoPerUser);
   let unclaimedWins = 0;
   let unclaimedReferrals = 0;
 
@@ -32,62 +40,84 @@ function Home({ yourLocalBalance, readContracts, address, web3Modal, logoutOfWeb
     unclaimedReferrals = infoPerUser.earnedByReferrals - infoPerUser.claimedByReferrals;
   }
 
+  //Get balance
   let balance = utils.formatEther(yourLocalBalance || 0);
   balance = (+balance).toFixed(4);
 
-  let connectYourWallet;
+  let connectYourWalletSection = (
+    <div>
+      <h3>Please, connect your wallet</h3>
+      <p>Please connect your wallet to play, earn and claim your rewards.</p>
+      {web3Modal && (
+        <Button style={{ marginLeft: 8 }} shape="round" onClick={accountButtonInfo.action}>
+          {accountButtonInfo.name}
+        </Button>
+      )}
+    </div>
+  );
 
-  let accountButtonInfo;
-  if (web3Modal?.cachedProvider) {
-    accountButtonInfo = { name: "Logout", action: logoutOfWeb3Modal };
-  } else {
-    accountButtonInfo = { name: "Connect", action: loadWeb3Modal };
-  }
+  let gameSection = (
+    <div id="game">
+      <div id="board">
+        <div id="reel1"></div>
+        <div id="reel2"></div>
+        <div id="reel3"></div>
+      </div>
+      <div id="controls">
+        <div id="moneySelector">
+          <Button id="spinButton" style={{ marginLeft: 8 }} shape="round">
+            -
+          </Button>
+          <div>
+            <h4>Total bet</h4>
+            <h3>5</h3>
+          </div>
+          <Button id="spinButton" style={{ marginLeft: 8 }} shape="round">
+            +
+          </Button>
+        </div>
+        <Button id="spinButton" style={{ marginLeft: 8 }} shape="round">
+          SPIN!
+        </Button>
+      </div>
+    </div>
+  );
 
   if (!address) {
     balance = "_____";
     unclaimedWins = "_____";
     unclaimedReferrals = "_____";
-    connectYourWallet = (
-      <div>
-        <h2>Please, connect your wallet</h2>
-        <p>Please connect your wallet to play, earn and claim your rewards.</p>
-        {web3Modal && (
-          <Button style={{ marginLeft: 8 }} shape="round" onClick={accountButtonInfo.action}>
-            {accountButtonInfo.name}
-          </Button>
-        )}
-      </div>
-    );
+    gameSection = "";
   } else {
-    connectYourWallet = "";
+    connectYourWalletSection = "";
   }
 
   return (
     <div>
       <div id="header">
-        <h1>Dashboard</h1>
+        <h2>Dashboard</h2>
         <p>All values are expressed in MATIC.</p>
       </div>
       <div id="balanceInfo" className="balanceInfo">
         <div className="balance">
-          <h2>Balance</h2>
+          <h3>Balance</h3>
           <p>
             <b>{balance}</b>
           </p>
         </div>
         <div className="rewards">
-          <h2>Unclaimed rewards</h2>
+          <h3>Unclaimed rewards</h3>
           <div>
-            <h3>Wins:</h3>
+            <h4>Wins:</h4>
             <p>{unclaimedWins}</p>
           </div>
           <div>
-            <h3>Referrals:</h3>
+            <h4>Referrals:</h4>
             <p>{unclaimedReferrals}</p>
           </div>
         </div>
-        {connectYourWallet}
+        {connectYourWalletSection}
+        {gameSection}
       </div>
     </div>
   );
