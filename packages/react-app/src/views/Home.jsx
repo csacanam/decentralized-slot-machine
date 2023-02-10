@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import React from "react";
 import { Link } from "react-router-dom";
 import { utils } from "ethers";
-import { Button } from "antd";
+import { Button, Input, Row, Tooltip, Col } from "antd";
 
 /**
  * web3 props can be passed from '../App.jsx' into your local view component for use
@@ -56,6 +56,16 @@ function Home({ yourLocalBalance, readContracts, address, web3Modal, logoutOfWeb
     </div>
   );
 
+  const txValueInput = (
+    <div style={{ margin: 2 }} key="txValueInput">
+      <Input
+        placeholder="Total bet"
+        //onChange={e => setTxValue(e.target.value)}
+        //value={txValue}
+      />
+    </div>
+  );
+
   let gameSection = (
     <div id="game">
       <div id="board">
@@ -68,10 +78,7 @@ function Home({ yourLocalBalance, readContracts, address, web3Modal, logoutOfWeb
           <Button id="spinButton" style={{ marginLeft: 8 }} shape="round">
             -
           </Button>
-          <div>
-            <h4>Total bet</h4>
-            <h3>5</h3>
-          </div>
+          <div>{txValueInput}</div>
           <Button id="spinButton" style={{ marginLeft: 8 }} shape="round">
             +
           </Button>
