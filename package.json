@@ -68,7 +68,6 @@
       "**/hardhat-ts/**"
     ]
   },
-  "dependencies": {},
   "devDependencies": {
     "husky": "^7.0.2",
     "lint-staged": "^13.0.3"
@@ -78,5 +77,8 @@
       "prettier --write",
       "eslint --fix"
     ]
+  },
+  "dependencies": {
+    "sass": "^1.58.1"
   }
 }

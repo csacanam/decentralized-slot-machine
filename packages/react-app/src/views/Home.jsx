@@ -4,7 +4,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { utils } from "ethers";
 import { Button, Input, Row, Tooltip, Col } from "antd";
-
+import "../styles/home.scss";
 /**
  * web3 props can be passed from '../App.jsx' into your local view component for use
  * @param {*} yourLocalBalance balance on current network
@@ -12,16 +12,6 @@ import { Button, Input, Row, Tooltip, Col } from "antd";
  * @returns react component
  **/
 function Home({ yourLocalBalance, readContracts, address, web3Modal, logoutOfWeb3Modal, loadWeb3Modal }) {
-  const styles = {
-    balanceInfo: {
-      display: "flex",
-      background: "papayawhip",
-      justifyContent: "center",
-      alignItems: "center",
-      height: "200px",
-    },
-  };
-
   //Connect Button
   let accountButtonInfo;
   if (web3Modal?.cachedProvider) {
@@ -45,7 +35,7 @@ function Home({ yourLocalBalance, readContracts, address, web3Modal, logoutOfWeb
   balance = (+balance).toFixed(4);
 
   let connectYourWalletSection = (
-    <div>
+    <section>
       <h3>Please, connect your wallet</h3>
       <p>Please connect your wallet to play, earn and claim your rewards.</p>
       {web3Modal && (
@@ -53,7 +43,7 @@ function Home({ yourLocalBalance, readContracts, address, web3Modal, logoutOfWeb
           {accountButtonInfo.name}
         </Button>
       )}
-    </div>
+    </section>
   );
 
   const txValueInput = (
@@ -101,31 +91,69 @@ function Home({ yourLocalBalance, readContracts, address, web3Modal, logoutOfWeb
 
   return (
     <div>
-      <div id="header">
-        <h2>Dashboard</h2>
-        <p>All values are expressed in MATIC.</p>
-      </div>
-      <div id="balanceInfo" className="balanceInfo">
-        <div className="balance">
-          <h3>Balance</h3>
-          <p>
-            <b>{balance}</b>
-          </p>
+      <section className="container" id="header">
+        <div>
+          <h2>Dashboard</h2>
+          <p>All values are expressed in MATIC.</p>
         </div>
-        <div className="rewards">
-          <h3>Unclaimed rewards</h3>
+
+        <section className="balance" id="balanceInfo">
           <div>
-            <h4>Wins:</h4>
-            <p>{unclaimedWins}</p>
+            <h3>Balance</h3>
+            <p>
+              <b>{balance}</b>
+            </p>
+            {address && <Button className="pay-button">Pay table</Button>}
           </div>
-          <div>
-            <h4>Referrals:</h4>
-            <p>{unclaimedReferrals}</p>
+          <div className="rewards">
+            <h3>Unclaimed rewards</h3>
+            <div>
+              <h4>Wins:</h4>
+              <p>{unclaimedWins}</p>
+            </div>
+            <div>
+              <h4>Referrals:</h4>
+              <p>{unclaimedReferrals}</p>
+            </div>
           </div>
-        </div>
-        {connectYourWalletSection}
-        {gameSection}
-      </div>
+        </section>
+
+        {!address && (
+          <section className="connectWallet">
+            <h3>Please, connect your wallet</h3>
+            <p>Please connect your wallet to play, earn and claim your rewards.</p>
+            {web3Modal && (
+              <Button style={{ marginLeft: 8 }} shape="round" onClick={accountButtonInfo.action}>
+                {accountButtonInfo.name}
+              </Button>
+            )}
+          </section>
+        )}
+
+        {!address && (
+          <section id="game">
+            <div id="board">
+              <div id="reel1"></div>
+              <div id="reel2"></div>
+              <div id="reel3"></div>
+            </div>
+            <div id="controls">
+              <div id="moneySelector">
+                <Button id="spinButton" style={{ marginLeft: 8 }} shape="round">
+                  -
+                </Button>
+                <div>{txValueInput}</div>
+                <Button id="spinButton" style={{ marginLeft: 8 }} shape="round">
+                  +
+                </Button>
+              </div>
+              <Button id="spinButton" style={{ marginLeft: 8 }} shape="round">
+                SPIN!
+              </Button>
+            </div>
+          </section>
+        )}
+      </section>
     </div>
   );
 }
